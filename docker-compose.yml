@@ -1,0 +1,34 @@
+version: '3'
+services:
+  odoo:
+    image: odoo:11
+    depends_on:
+      - db
+    ports:
+      - 8069:8069
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./filestore:/var/lib/odoo/filestore
+      - ./sessions:/var/lib/odoo/sessions
+      - ./addons:/mnt/extra-addons
+      - ./aditional_addons:/opt/odoo/aditional_addons
+      - ./config:/etc/odoo
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+  pgadmin:
+    image: thajeztah/pgadmin4
+    ports:
+      - 5051:5050
+    links:
+      - db
+    volumes:
+      - ./pgadmin:/pgadmin
+volumes:
+  odoo-web-data:
+  odoo-db-data:
